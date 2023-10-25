@@ -19,17 +19,46 @@ M1M3 Force Balance System - Inertia Compensation
 Abstract
 ========
 
-The M1M3 Force Balance System was engineered to mitigate the influence of gravity/elevation forces, thermal fluctuations, and inertia impacts. This technical note presents an initial analysis of the Force Balance System's performance when implementing corrections to account for inertia effects.
+The M1M3 Force Balance System was engineered to mitigate the influence of gravity/elevation forces, thermal fluctuations, and inertia impacts.
+This technical note presents an initial analysis of the Force Balance System's performance when implementing corrections to account for inertia effects.
 
-Add content here
-================
+Introduction
+============
 
-Add content here.
-See the `reStructuredText Style Guide <https://developer.lsst.io/restructuredtext/style.html>`__ to learn how to create sections, links, images, tables, equations, and more.
+- Who, what, when, where?
+- Definitions
+- Purpose/use of the document - Why?
+- Background - Why?
+- Scope - Why?
+- Methodology - How?
+
+Single Slew Analysis
+====================
+
+- Explain test setup
+- Explain data mining
+- Explain analysis
+
+Day Analysis
+============
+
+- Explain test setup
+- Explain data mining
+- Explain analysis
+
+Conclusion
+==========
+
+- Summarize the results
+
+References
+==========
+
+- Add references here
 
 .. Make in-text citations with: :cite:`bibkey`.
 .. Uncomment to use citations
 .. .. rubric:: References
-.. 
+..
 .. .. bibliography:: local.bib lsstbib/books.bib lsstbib/lsst.bib lsstbib/lsst-dm.bib lsstbib/refs.bib lsstbib/refs_ads.bib
 ..    :style: lsst_aa
