@@ -1,6 +1,8 @@
 ################################################
 .. _LVV-T2854: https://jira.lsstcorp.org/secure/Tests.jspa#/testCase/LVV-T2854
 .. _LVV-T2811: 
+.. _MTMount.azimuth: https://ts-xml.lsst.io/sal_interfaces/MTMount.html#azimuth
+.. _MTMount.elevation: https://ts-xml.lsst.io/sal_interfaces/MTMount.html#elevation
 .. _MTM1M3.appliedAccelerationForces: https://ts-xml.lsst.io/sal_interfaces/MTM1M3.html#appliedAccelerationForces
 .. _MTM1M3.appliedVelocityForces: https://ts-xml.lsst.io/sal_interfaces/MTM1M3.html#appliedVelocityForces
 .. _MTM1M3.hardpointActuatorData: https://ts-xml.lsst.io/sal_interfaces/MTM1M3.html#hardpointactuatordata
