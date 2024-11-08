@@ -384,7 +384,7 @@ def query_script_states(efd_client, start_day_obs, end_day_obs, block_id=None):
     return df_state
 
 
-def query_block_status(client, start_day_obs, end_day_obs, block_name):
+def query_block_status(client, start_day_obs, end_day_obs, block_name=None):
     """
     Query the EFD for the block status.
 
@@ -396,7 +396,7 @@ def query_block_status(client, start_day_obs, end_day_obs, block_name):
         The first day of observations to query.
     end_day_obs : int
         The last day of observations to query.
-    block_name : str
+    block_name : str, optional
         The name of the block to query.
 
     Returns
@@ -411,5 +411,8 @@ def query_block_status(client, start_day_obs, end_day_obs, block_name):
         begin=start_day_obs,
         end=end_day_obs,
     )
-    df_block = df_block[df_block.id == block_name]
+
+    if block_name is not None:
+        df_block = df_block[df_block.id == block_name]
+        
     return df_block
