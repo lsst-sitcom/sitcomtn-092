@@ -1,0 +1,8 @@
+begin_time: "2024-11-30 22:16:26"
+end_time: "2024-11-30 22:29:27"
+day_obs: 20241130
+block_info: "10% GGGR to test new velocity forces fit"
+block: "T227"
+plot_dir: "./plots/20241130_T227_1/"
+tmax: 3.2
+tmin: -3.2

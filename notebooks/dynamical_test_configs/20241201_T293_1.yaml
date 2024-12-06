@@ -1,0 +1,8 @@
+begin_time: "2024-12-02 23:34:11"
+end_time: "2024-12-02 23:49:52"
+day_obs: 20241202
+block_info: "20% GGGG, test with booster valves after fix"
+block: "T293"
+plot_dir: "./plots/20241201_T293_1/"
+tmax: 3.2
+tmin: -3.2

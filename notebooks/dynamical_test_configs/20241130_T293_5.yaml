@@ -1,0 +1,8 @@
+begin_time: "2024-12-01 09:20:10"
+end_time: "2024-12-01 09:33:06"
+day_obs: 20241130
+block_info: "20% GGGR, changed max FA step from 55 to 100 N / loop"
+block: "T293"
+plot_dir: "./plots/20241130_T293_5/"
+tmax: 3.2
+tmin: -3.2

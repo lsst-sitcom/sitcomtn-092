@@ -1,0 +1,8 @@
+begin_time: "2024-11-30 22:49:52"
+end_time: "2024-11-30 23:03:17"
+day_obs: 20241130
+block_info: "20% GGRR, changed Balance PID Mz P 1.5 → 1.0, I 0.5 → 0.7"
+block: "T293"
+plot_dir: "./plots/20241130_T293_4/"
+tmax: 3.2
+tmin: -3.2
