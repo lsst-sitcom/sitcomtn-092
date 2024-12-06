@@ -1,0 +1,8 @@
+begin_seq_num: 91
+end_seq_num: 106
+day_obs: 20241129
+block_info: "5% RRRR"
+block: "T227"
+plot_dir: "./plots/20241129_T227_2/"
+tmax: 3.2
+tmin: -3.2

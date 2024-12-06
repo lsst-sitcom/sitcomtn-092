@@ -1,0 +1,8 @@
+begin_time: "2024-11-30 19:47:48"
+end_time: "2024-11-30 20:12:25"
+day_obs: 20241130
+block_info: "2% RRRR"
+block: "T293"
+plot_dir: "./plots/20241130_T293_1/"
+tmax: 3.2
+tmin: -3.2

@@ -1,0 +1,8 @@
+begin_seq_num: 21
+end_seq_num: 36
+day_obs: 20241129
+block_info: "5% GRRR"
+block: "T293"
+plot_dir: "./plots/20241129_T293_1/"
+tmax: 3.2
+tmin: -3.2
