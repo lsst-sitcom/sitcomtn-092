@@ -17,7 +17,20 @@
 **This technote is a work-in-progress.**
 :::
 
+## Introduction
 
+(add an introductory text here)
+
+## Single Slew Analysis
+
+(add text explaining single slew)
+
+## Histogram Analysis
+
+(add text explaining histograms)
+
+
+%% TODO - @pvenegas - Delete everything below this line
 ## M1M3 actuator movies
 
 Craig Lage - 20-Apr-23 The 17 tons of mirror are supported by 156 pneumatic actuators where 44 are single-axis and provide support only on the axial direction, 100 are dual-axis providing support in the axial and lateral direction, and 12 are dual-axis providing support in the axial and cross lateral directions. Positioning is provided by 6 hard points in a hexapod configuration which moves the mirror to a fixed operational position that shall be maintained during telescope operations. The remaining optical elements will be moved relative to this position in order to align the telescope optics. Support and optical figure correction is provided by 112 dual axis and 44 single axis pneumatic actuators.
