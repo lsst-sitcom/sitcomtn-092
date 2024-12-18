@@ -19,15 +19,40 @@
 
 ## Introduction
 
-(add an introductory text here)
+- What is the Inertia Compensation System?
+  - Balance Forces
+  - Acceleration Forces
+  - Velocity Forces
+  - Booster Valves
+  - What are the RRGG codes we see around? Why are they important?
+
+- [TMA Motion Settings](https://rubinobs.atlassian.net/wiki/spaces/LSSTCOM/pages/53741249/TMA+Motion+Settings)
+  - Why do we have different motion settings?
+
 
 ## Single Slew Analysis
 
 (add text explaining single slew)
 
+
 ## Histogram Analysis
 
 (add text explaining histograms)
+
+
+## M1M3 and M2 Surrogates Test Campaigns
+
+- When did they happen? Dates.
+- What tests did we execute? Those were BLOCK tickets, instead of test cases. List them.
+- Final results - add a link to SPIE Paper. There is no need to repeat information.
+
+
+## ComCam on Sky Campaign
+
+- What were the settings used?
+- What are the results?
+- Add links to the existing notebooks, plots, etc.
+- Add interpretation to these results.
 
 
 %% TODO - @pvenegas - Delete everything below this line
