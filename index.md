@@ -3,7 +3,8 @@
 ```{eval-rst}
 .. abstract::
 
-   The M1M3 Force Balance System was engineered to mitigate the influence of gravity/elevation forces, thermal fluctuations, and inertia impacts. This technical note presents an initial analysis of the Force Balance System's performance when implementing corrections to account for inertia effects.
+   The M1M3 Force Balance System was engineered to mitigate the influence of gravity/elevation forces, thermal fluctuations, and inertia impacts.
+   This technical note presents an initial analysis of the Force Balance System's performance when implementing corrections to account for inertia effects.
 
 
 ```
@@ -16,10 +17,45 @@
 **This technote is a work-in-progress.**
 :::
 
-## Abstract
+## Introduction
 
-The M1M3 Force Balance System was engineered to mitigate the influence of gravity/elevation forces, thermal fluctuations, and inertia impacts. This technical note presents an initial analysis of the Force Balance System's performance when implementing corrections to account for inertia effects.
+- What is the Inertia Compensation System?
+  - Balance Forces
+  - Acceleration Forces
+  - Velocity Forces
+  - Booster Valves
+  - What are the RRGG codes we see around? Why are they important?
 
+- [TMA Motion Settings](https://rubinobs.atlassian.net/wiki/spaces/LSSTCOM/pages/53741249/TMA+Motion+Settings)
+  - Why do we have different motion settings?
+
+
+## Single Slew Analysis
+
+(add text explaining single slew)
+
+
+## Histogram Analysis
+
+(add text explaining histograms)
+
+
+## M1M3 and M2 Surrogates Test Campaigns
+
+- When did they happen? Dates.
+- What tests did we execute? Those were BLOCK tickets, instead of test cases. List them.
+- Final results - add a link to SPIE Paper. There is no need to repeat information.
+
+
+## ComCam on Sky Campaign
+
+- What were the settings used?
+- What are the results?
+- Add links to the existing notebooks, plots, etc.
+- Add interpretation to these results.
+
+
+%% TODO - @pvenegas - Delete everything below this line
 ## M1M3 actuator movies
 
 Craig Lage - 20-Apr-23 The 17 tons of mirror are supported by 156 pneumatic actuators where 44 are single-axis and provide support only on the axial direction, 100 are dual-axis providing support in the axial and lateral direction, and 12 are dual-axis providing support in the axial and cross lateral directions. Positioning is provided by 6 hard points in a hexapod configuration which moves the mirror to a fixed operational position that shall be maintained during telescope operations. The remaining optical elements will be moved relative to this position in order to align the telescope optics. Support and optical figure correction is provided by 112 dual axis and 44 single axis pneumatic actuators.
@@ -89,8 +125,8 @@ from lsst_efd_client import EfdClient
 
 ### Set up the necessary subroutines
 
-```python 
-def actuator_layout(ax):    
+```python
+def actuator_layout(ax):
     """ Plot a visualization of the actuator locations and types       Parameters      ----------       ax : a matplotlib.axes object
       Returns
      -------
@@ -405,11 +441,11 @@ def get_zero_values_and_limits(df, subtract_baseline, t0, t1):
 ```
 
 ### Now generate the frames
-This will take some time   
+This will take some time
 
-```python   
-  client = EfdClient('usdf_efd')  
-  
+```python
+  client = EfdClient('usdf_efd')
+
   forces = await client.select_time_series("lsst.sal.MTM1M3.forceActuatorData", "*",
                                         Time(start, scale='utc'), Time(end, scale='utc'))
   timestamp = forces.index[0].isoformat().split('.')[0].replace('-','').replace(':','')
@@ -443,11 +479,11 @@ This will take some time
 
 ### Now build the movie
 
-```python 
+```python
 print(f"\033[1mThe movie name will be: {dir_name}movie_{timestamp}/m1m3_movie.mp4\033[0m")
 ```
 
-```python 
+```python
 command = f"ffmpeg -pattern_type glob -i '{dir_name}movie_{timestamp}/*.png' -f mp4 -vcodec libx264 -pix_fmt yuv420p -framerate 50 -y {dir_name}movie_{timestamp}/m1m3_movie.mp4" args = shlex.split(command) build_movie = subprocess.Popen(args) build_movie.wait()
 
 ```
