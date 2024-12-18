@@ -3,7 +3,8 @@
 ```{eval-rst}
 .. abstract::
 
-   The M1M3 Force Balance System was engineered to mitigate the influence of gravity/elevation forces, thermal fluctuations, and inertia impacts. This technical note presents an initial analysis of the Force Balance System's performance when implementing corrections to account for inertia effects.
+   The M1M3 Force Balance System was engineered to mitigate the influence of gravity/elevation forces, thermal fluctuations, and inertia impacts.
+   This technical note presents an initial analysis of the Force Balance System's performance when implementing corrections to account for inertia effects.
 
 
 ```
