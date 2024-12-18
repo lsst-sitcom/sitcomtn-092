@@ -16,9 +16,6 @@
 **This technote is a work-in-progress.**
 :::
 
-## Abstract
-
-The M1M3 Force Balance System was engineered to mitigate the influence of gravity/elevation forces, thermal fluctuations, and inertia impacts. This technical note presents an initial analysis of the Force Balance System's performance when implementing corrections to account for inertia effects.
 
 ## M1M3 actuator movies
 
@@ -89,8 +86,8 @@ from lsst_efd_client import EfdClient
 
 ### Set up the necessary subroutines
 
-```python 
-def actuator_layout(ax):    
+```python
+def actuator_layout(ax):
     """ Plot a visualization of the actuator locations and types       Parameters      ----------       ax : a matplotlib.axes object
       Returns
      -------
@@ -405,11 +402,11 @@ def get_zero_values_and_limits(df, subtract_baseline, t0, t1):
 ```
 
 ### Now generate the frames
-This will take some time   
+This will take some time
 
-```python   
-  client = EfdClient('usdf_efd')  
-  
+```python
+  client = EfdClient('usdf_efd')
+
   forces = await client.select_time_series("lsst.sal.MTM1M3.forceActuatorData", "*",
                                         Time(start, scale='utc'), Time(end, scale='utc'))
   timestamp = forces.index[0].isoformat().split('.')[0].replace('-','').replace(':','')
@@ -443,11 +440,11 @@ This will take some time
 
 ### Now build the movie
 
-```python 
+```python
 print(f"\033[1mThe movie name will be: {dir_name}movie_{timestamp}/m1m3_movie.mp4\033[0m")
 ```
 
-```python 
+```python
 command = f"ffmpeg -pattern_type glob -i '{dir_name}movie_{timestamp}/*.png' -f mp4 -vcodec libx264 -pix_fmt yuv420p -framerate 50 -y {dir_name}movie_{timestamp}/m1m3_movie.mp4" args = shlex.split(command) build_movie = subprocess.Popen(args) build_movie.wait()
 
 ```
