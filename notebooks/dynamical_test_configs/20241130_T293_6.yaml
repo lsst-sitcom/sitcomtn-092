@@ -1,0 +1,8 @@
+begin_time: "2024-12-01 08:49:07"
+end_time: "2024-12-01 09:02:06"
+day_obs: 20241130
+block_info: "20% GGGR verification"
+block: "T293"
+plot_dir: "./plots/20241130_T293_6/"
+tmax: 3.2
+tmin: -3.2

@@ -1,6 +1,6 @@
 .PHONY:
 init:
-	pip install tox pre-commit
+	pip3 install tox pre-commit
 	pre-commit install
 
 .PHONY:

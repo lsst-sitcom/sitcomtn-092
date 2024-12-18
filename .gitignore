@@ -3,3 +3,9 @@ _build/
 .tox/
 venv/
 .venv/
+
+# Ignore Jupyter Checkpoints
+**/.ipynb_checkpoints
+
+# Ignore Python Cache
+**/__pycache__
