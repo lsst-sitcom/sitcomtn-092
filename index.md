@@ -51,9 +51,9 @@ The tests were conducted on two observation days: 2024-01-03 and 2024-01-05.
 The ICS effectively compensated for inertial forces at moderate speeds (40% velocity, acceleration, and jerk). However, at TMA maximum motion settings (100%), the measured forces exceeded the fatigue limits, raising concerns about long-term mirror safety. To ensure the telescope's safety and longevity, slews should be configured to maintain Hardpoint forces within the 15% operational limit (450 N).
 
 Key Limits:
-•	Nominal Breakaway Limit: 3000 N (absolute maximum force hardpoints can handle).
-•	Fatigue Limit: 30% of 3000 N (900 N); forces above this risk long-term mirror damage.
-•	Operational Limit: 15% of 3000 N (450 N); target for safe, long-term operation.
+   - Nominal Breakaway Limit: 3000 N (absolute maximum force hardpoints can handle).
+   - Fatigue Limit: 30% of 3000 N (900 N); forces above this risk long-term mirror damage.
+   - Operational Limit: 15% of 3000 N (450 N); target for safe, long-term operation.
 
 
 ## Histogram Analysis
