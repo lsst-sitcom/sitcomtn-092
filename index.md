@@ -50,15 +50,17 @@ The tests were conducted on two observation days: **2024-01-03 and 2024-01-05**.
      	
 The ICS effectively compensated for inertial forces at moderate speeds (40% velocity, acceleration, and jerk). However, at TMA maximum motion settings (100%), the measured forces exceeded the fatigue limits, raising concerns about long-term mirror safety. To ensure the telescope's safety and longevity, slews should be configured to maintain Hardpoint forces within the **15% operational limit (450 N)**.
 
+## Histogram Analysis
+The same data collected on the observation days, **2024-01-03 and 2024-01-05**, is displayed as a histogram to organize the data into groups for these specific observation days. The histogram illustrates the slews performed at 100% and 40% velocity, along with the corresponding acceleration and jerk, which reached certain minimum and maximum values during the slewing process.
+	1. **100% Velocity, Acceleration, and Jerk (2024-01-03)**: 
+	   - It is observed that almost every slew performed in this 100% configuration exceeds the negative and positive fatigue limits of 900 N, which poses a significant danger to the mirror in the long term due to stress and fatigue.
+	2. **40% Velocity, Acceleration, and Jerk (2024-01-05)**: 
+   - It is observed that almost every slew obtained during soak tests remains within the fatigue limits of 900 N, with the majority close to or within the operational limits of 450 N.
+
 **Key Limits:**
    - **Nominal Breakaway Limit**: 3000 N (absolute maximum force hardpoints can handle).
    - **Fatigue Limit**: 30% of 3000 N (900 N); forces above this risk long-term mirror damage.
    - **Operational Limit**: 15% of 3000 N (450 N); target for safe, long-term operation.
-
-
-## Histogram Analysis
-
-(add text explaining histograms)
 
 
 ## M1M3 and M2 Surrogates Test Campaigns
