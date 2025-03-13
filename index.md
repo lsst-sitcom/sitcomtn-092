@@ -50,9 +50,8 @@ The tests were conducted on two observation days: **2024-01-03 and 2024-01-05**.
 
    1.	**100% Velocity, Acceleration, and Jerk (2024-01-03)**:
       
-      - Forces on the Hardpoints stay within the nominal breakaway limit (3000 N)  but exceed the 30% fatigue limit (900 N).
-     	
-      - This configuration poses a risk of mirror damage due to stress and fatigue.
+      Forces on the Hardpoints stay within the nominal breakaway limit (3000 N)  but exceed the 30% fatigue limit (900 N).
+     	This configuration poses a risk of mirror damage due to stress and fatigue.
      	
    3.	**40% Velocity, Acceleration, and Jerk (2024-01-05)**:
       
