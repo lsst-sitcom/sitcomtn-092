@@ -3,9 +3,9 @@
 ```{eval-rst}
 .. abstract::
 
-   The M1M3 Force Balance System was engineered to mitigate the influence of gravity/elevation forces, thermal fluctuations, and inertia impacts.
-   This technical note presents an initial analysis of the Force Balance System's performance when implementing corrections to account for inertia effects.
+   The M1M3 Force Balance System was engineered to mitigate the influence of gravity/elevation forces, thermal fluctuations, inertial forces.
 
+   This technical note presents an initial analysis of the Force Balance System's performance when implementing corrections to account for inertial effects.
 
 ```
 
@@ -32,26 +32,39 @@
 
 ## Single Slew Analysis
 
-   During the full-speed sky mapping mission, the telescope will move very quickly, generating significant inertial forces. To counteract these forces, the **Inertial Compensation System (ICS)** is employed. The ICS consists of accelerometers and gyroscopic sensors that measure the telescope's motion and activate during slews in elevation, azimuth, or both axes. This system is critical for minimizing the physical effects of inertial forces on the telescope's structure.
-
-The test involves short slews of 3.5 degrees (long slews defined as > 3.5 degrees and short slews as ≤ 3.5 degrees). The objective is to measure forces in the six **Hardpoints (HPs)**, ensuring they remain below the breakaway limits. The nominal breakaway limit, previously measured is **3000 N**, defines the maximum force a hardpoint can withstand before disengaging to protect the mirror. Breakawy testing involved applying compression and tension forces to each hardpoint until breakaway occurred, confirming that the limits were within the expected range.
+During the full-speed sky mapping mission, the telescope will move very quickly, generating significant inertial forces. 
+To counteract these forces, the **Inertial Compensation System (ICS)** is employed. 
+The ICS consists of accelerometers and gyroscopic sensors that measure the telescope's motion and activate during slews in elevation, azimuth, or both axes. 
+This system is critical for minimizing the physical effects of inertial forces on the telescope's structure.
+The test involves short slews of 3.5 degrees (long slews defined as > 3.5 degrees and short slews as ≤ 3.5 degrees). 
+The objective is to measure forces in the six **Hardpoints (HPs)**, ensuring they remain below the breakaway limits.
+The nominal breakaway limit, previously measured is **3000 N**, defines the maximum force a hardpoint can withstand before disengaging to protect the mirror. 
+Breakawy testing involved applying compression and tension forces to each hardpoint until breakaway occurred, confirming that the limits were within the expected range.
 
 ### Dynamic Test and Hardpoint Forces
-The dynamic test measures the force on the six Hardpoints where nominal force measurements should ideally remain at zero during slews. The limits of Hardpoints do not bear excessive loads, forces ideally not crossing the 15% of breakway limits (450 N), forces exceeding this threshold risk long-term mirror damage.
+The dynamic test measures the force on the six Hardpoints where nominal force measurements should ideally remain at zero during slews.
+The limits of Hardpoints do not bear excessive loads, forces ideally not crossing the 15% of breakway limits (450 N), forces exceeding this threshold risk long-term mirror damage.
 
 #### Test Configurations
 The tests were conducted on two observation days: **2024-01-03 and 2024-01-05**.
+
    1.	**100% Velocity, Acceleration, and Jerk (2024-01-03)**:
       - Forces on the Hardpoints stay within the nominal breakaway limit (3000 N)  but exceed the 30% fatigue limit (900 N).
+     	
       - This configuration poses a risk of mirror damage due to stress and fatigue.
-   2.	**40% Velocity, Acceleration, and Jerk (2024-01-05)**:
+     	
+   3.	**40% Velocity, Acceleration, and Jerk (2024-01-05)**:
       - Forces on the Hardpoints remained within the 15% operational limit (450 N).
+     	
       - This configuration is safe for long-term operation, minimizing stress on the mirror.
      	
-The ICS effectively compensated for inertial forces at moderate speeds (40% velocity, acceleration, and jerk). However, at TMA maximum motion settings (100%), the measured forces exceeded the fatigue limits, raising concerns about long-term mirror safety. To ensure the telescope's safety and longevity, slews should be configured to maintain Hardpoint forces within the **15% operational limit (450 N)**.
+The ICS effectively compensated for inertial forces at moderate speeds (40% velocity, acceleration, and jerk). 
+However, at TMA maximum motion settings (100%), the measured forces exceeded the fatigue limits, raising concerns about long-term mirror safety. 
+To ensure the telescope's safety and longevity, slews should be configured to maintain Hardpoint forces within the **15% operational limit (450 N)**.
 
 ### Histogram Analysis
-The same data collected on the observation days, **2024-01-03 and 2024-01-05**, is displayed as a histogram to organize the data into groups for these specific observation days. The histogram illustrates the slews performed at 100% and 40% velocity, along with the corresponding acceleration and jerk, which reached certain minimum and maximum values during the slewing process.
+The same data collected on the observation days, **2024-01-03 and 2024-01-05**, is displayed as a histogram to organize the data into groups for these specific observation days. 
+The histogram illustrates the slews performed at 100% and 40% velocity, along with the corresponding acceleration and jerk, which reached certain minimum and maximum values during the slewing process.
 
 #### Test Configurations
    1. **100% Velocity, Acceleration, and Jerk (2024-01-03)**: 
