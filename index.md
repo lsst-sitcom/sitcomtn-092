@@ -70,14 +70,14 @@ The histogram illustrates the slews performed at 100% and 40% velocity, along wi
 
 #### Test Configurations
    1. **100% Velocity, Acceleration, and Jerk (2024-01-03)**:
-      - It is observed that almost every slew performed in this 100% configuration exceeds the negative and positive fatigue limits of 900 N, which poses a significant danger to the mirror in the long term due to stress and fatigue.
+   - It is observed that almost every slew performed in this 100% configuration exceeds the negative and positive fatigue limits of 900 N, which poses a significant danger to the mirror in the long term due to stress and fatigue.
      
       <img width="833" alt="histogram100%VEL" src="https://github.com/user-attachments/assets/7b438e0f-dfd0-425b-9117-9c60fc5d669b" />
         
    2. **40% Velocity, Acceleration, and Jerk (2024-01-05)**:
-      - It is observed that almost every slew obtained during soak tests remains within the fatigue limits of 900 N, with the majority close to or within the operational limits of 450 N.
+   - It is observed that almost every slew obtained during soak tests remains within the fatigue limits of 900 N, with the majority close to or within the operational limits of 450 N.
 
-      <img width="839" alt="histogram40%VELO" src="https://github.com/user-attachments/assets/57ba286f-fddb-4dcd-99ab-56bcb3fcf183" />
+      <img width="833" alt="histogram40%VELO" src="https://github.com/user-attachments/assets/57ba286f-fddb-4dcd-99ab-56bcb3fcf183" />
 
 
 **Key Limits:**
