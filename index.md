@@ -53,17 +53,19 @@ The tests were conducted on two observation days: **2024-01-03 and 2024-01-05**.
 
      <img width="833" alt="hp100%velo" src="https://github.com/user-attachments/assets/79fc7f7f-2327-4988-9000-49580eee0916" />
    <p>
-   <em> Fig.01. ICS performance when performing a 3.5 deg slew at 100% velocity, acceleration, and jerk. The top y-axes show the measured hardpoint forces. The middle and bottom y-axes show the torques and velocities for Azimuth in Elevation over the same time window. Since the measured forces are trespassing the fatigue limit, running the survey in this configuration can cause damage to the mirror.
+   <em> Figure 1. ICS performance when performing a 3.5 deg slew at 100% velocity, acceleration, and jerk. The top y-axes show the measured hardpoint forces. The middle and bottom y-axes show the torques and velocities for Azimuth in Elevation over the same time window. Since the measured forces are trespassing the fatigue limit, running the survey in this configuration can cause damage to the mirror.
    </em>
    </p>
-
-     
+    
    2.	**40% Velocity, Acceleration, and Jerk (2024-01-05)**:
    - Forces on the Hardpoints remained within the 15% operational limit (450 N).
    - This configuration is safe for long-term operation, minimizing stress on the mirror.
       
      <img width="833" alt="hp40%velo" src="https://github.com/user-attachments/assets/65247b16-91f5-4673-bf55-e2c35981c7ac" />
-       //Fig.02. ICS performance when performing a 3.5 deg slew at 40% velocity, acceleration, and jerk. For this configuration, the measured forces are within the operational limits.//
+   <p>
+   <em> Figure 2. ICS performance when performing a 3.5 deg slew at 40% velocity, acceleration, and jerk. For this configuration, the measured forces are within the operational limits.
+   </em>
+   </p>
      
 The ICS effectively compensated for inertial forces at moderate speeds (40% velocity, acceleration, and jerk). 
 However, at TMA maximum motion settings (100%), the measured forces exceeded the fatigue limits, raising concerns about long-term mirror safety. 
@@ -78,13 +80,19 @@ The histogram illustrates the slews performed at 100% and 40% velocity, along wi
    - It is observed that almost every slew performed in this 100% configuration exceeds the negative and positive fatigue limits of 900 N, which poses a significant danger to the mirror in the long term due to stress and fatigue.
      
       <img width="833" alt="histogram100%VEL" src="https://github.com/user-attachments/assets/7b438e0f-dfd0-425b-9117-9c60fc5d669b" />
-        //Fig.03. Histogram showing the count of slews performed at 100% velocity, acceleration, and jerk that reached a certain minimum and maximum values during a slew.//
+   <p>
+   <em> Figure 3. Histogram showing the count of slews performed at 100% velocity, acceleration, and jerk that reached a certain minimum and maximum values during a slew.
+   </em>
+   </p>
      
    2. **40% Velocity, Acceleration, and Jerk (2024-01-05)**:
    - It is observed that almost every slew obtained during soak tests remains within the fatigue limits of 900 N, with the majority close to or within the operational limits of 450 N.
 
       <img width="833" alt="histogram40%VELO" src="https://github.com/user-attachments/assets/57ba286f-fddb-4dcd-99ab-56bcb3fcf183" />
-         //Fig.04. Histogram showing the count of slews performed at 40% velocity, acceleration, and jerk that reached a certain minimum and maximum values during a slew.//
+   <p>
+   <em> Figure 4. Histogram showing the count of slews performed at 40% velocity, acceleration, and jerk that reached a certain minimum and maximum values during a slew.
+   </em>
+   </p>
      
 **Key Limits:**
    - **Nominal Breakaway Limit**: 3000 N (absolute maximum force hardpoints can handle).
