@@ -49,19 +49,16 @@ The limits of Hardpoints do not bear excessive loads, forces ideally not crossin
 The tests were conducted on two observation days: **2024-01-03 and 2024-01-05**.
 
    1.	**100% Velocity, Acceleration, and Jerk (2024-01-03)**:
-
-      
       - Forces on the Hardpoints stay within the nominal breakaway limit (3000 N)  but exceed the 30% fatigue limit (900 N).
 
      	- This configuration poses a risk of mirror damage due to stress and fatigue.
 
-      <img width="554" alt="hp100%velo" src="https://github.com/user-attachments/assets/79fc7f7f-2327-4988-9000-49580eee0916" />
+        <img width="554" alt="hp100%velo" src="https://github.com/user-attachments/assets/79fc7f7f-2327-4988-9000-49580eee0916" />
      	
-   2.	**40% Velocity, Acceleration, and Jerk (2024-01-05)**:
-      
+   3.	**40% Velocity, Acceleration, and Jerk (2024-01-05)**:
       - Forces on the Hardpoints remained within the 15% operational limit (450 N).
 
-     	- This configuration is safe for long-term operation, minimizing stress on the mirror.
+      - This configuration is safe for long-term operation, minimizing stress on the mirror.
 
       <img width="550" alt="hp40%velo" src="https://github.com/user-attachments/assets/65247b16-91f5-4673-bf55-e2c35981c7ac" />
 
@@ -76,12 +73,12 @@ The histogram illustrates the slews performed at 100% and 40% velocity, along wi
 
 #### Test Configurations
    1. **100% Velocity, Acceleration, and Jerk (2024-01-03)**:
-   - It is observed that almost every slew performed in this 100% configuration exceeds the negative and positive fatigue limits of 900 N, which poses a significant danger to the mirror in the long term due to stress and fatigue.
+      - It is observed that almost every slew performed in this 100% configuration exceeds the negative and positive fatigue limits of 900 N, which poses a significant danger to the mirror in the long term due to stress and fatigue.
      
       <img width="833" alt="histogram100%VEL" src="https://github.com/user-attachments/assets/7b438e0f-dfd0-425b-9117-9c60fc5d669b" />
         
    2. **40% Velocity, Acceleration, and Jerk (2024-01-05)**:
-   - It is observed that almost every slew obtained during soak tests remains within the fatigue limits of 900 N, with the majority close to or within the operational limits of 450 N.
+      - It is observed that almost every slew obtained during soak tests remains within the fatigue limits of 900 N, with the majority close to or within the operational limits of 450 N.
 
       <img width="839" alt="histogram40%VELO" src="https://github.com/user-attachments/assets/57ba286f-fddb-4dcd-99ab-56bcb3fcf183" />
 
