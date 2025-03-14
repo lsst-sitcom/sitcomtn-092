@@ -37,13 +37,14 @@ To counteract these forces, the **Inertial Compensation System (ICS)** is employ
 The ICS consists of accelerometers and gyroscopic sensors that measure the telescope's motion and activate during slews in elevation, azimuth, or both axes. 
 This system is critical for minimizing the physical effects of inertial forces on the telescope's structure.
 The test involves short slews of 3.5 degrees (long slews defined as > 3.5 degrees and short slews as ≤ 3.5 degrees). 
-The objective is to measure forces in the six **Hardpoints (HPs)**, ensuring they remain below the breakaway limits.
+The objective is to measure forces in the six **HardPoints (HPs)**, ensuring they remain below the breakaway limits.
 The nominal breakaway limit, previously measured is **3000 N**, defines the maximum force a hardpoint can withstand before disengaging to protect the mirror. 
 Breakawy testing involved applying compression and tension forces to each hardpoint until breakaway occurred, confirming that the limits were within the expected range.
 
 ### Dynamic Test and Hardpoint Forces
-The dynamic test measures the force on the six Hardpoints where nominal force measurements should ideally remain at zero during slews.
-The limits of Hardpoints do not bear excessive loads, forces ideally not crossing the 15% of breakway limits (450 N), forces exceeding this threshold risk long-term mirror damage.
+The dynamic test measures the force on the six HPs, and the measured forces should ideally remain at zero during slews.
+The HPs should not hold excessive forces, in other words, forces measured should not overstep the 15% of the breakway limits (450 N).
+This is important because overloaded forces can damage the mirror in the long-term.
 
 #### Test Configurations
 The tests were conducted on two observation days: **2024-01-03 and 2024-01-05**.
