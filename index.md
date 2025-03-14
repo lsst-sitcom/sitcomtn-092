@@ -49,6 +49,8 @@ The limits of Hardpoints do not bear excessive loads, forces ideally not crossin
 The tests were conducted on two observation days: **2024-01-03 and 2024-01-05**.
 
    1.	**100% Velocity, Acceleration, and Jerk (2024-01-03)**:
+
+      
       - Forces on the Hardpoints stay within the nominal breakaway limit (3000 N)  but exceed the 30% fatigue limit (900 N).
 
      	- This configuration poses a risk of mirror damage due to stress and fatigue.
@@ -56,6 +58,7 @@ The tests were conducted on two observation days: **2024-01-03 and 2024-01-05**.
       <img width="554" alt="hp100%velo" src="https://github.com/user-attachments/assets/79fc7f7f-2327-4988-9000-49580eee0916" />
      	
    2.	**40% Velocity, Acceleration, and Jerk (2024-01-05)**:
+      
       - Forces on the Hardpoints remained within the 15% operational limit (450 N).
 
      	- This configuration is safe for long-term operation, minimizing stress on the mirror.
