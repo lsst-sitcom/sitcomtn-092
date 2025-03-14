@@ -53,6 +53,7 @@ The tests were conducted on two observation days: **2024-01-03 and 2024-01-05**.
      
    <p>
    <img width="833" alt="hp100%velo" src="https://github.com/user-attachments/assets/79fc7f7f-2327-4988-9000-49580eee0916" />
+      
    <em> Figure 1. ICS performance when performing a 3.5 deg slew at 100% velocity, acceleration, and jerk. The top y-axes show the measured hardpoint forces. The middle and bottom y-axes show the torques and velocities for Azimuth in Elevation over the same time window. Since the measured forces are trespassing the fatigue limit, running the survey in this configuration can cause damage to the mirror.
    </em>
    </p>
@@ -63,6 +64,7 @@ The tests were conducted on two observation days: **2024-01-03 and 2024-01-05**.
      
    <p>    
    <img width="833" alt="hp40%velo" src="https://github.com/user-attachments/assets/65247b16-91f5-4673-bf55-e2c35981c7ac" />
+      
    <em> Figure 2. ICS performance when performing a 3.5 deg slew at 40% velocity, acceleration, and jerk. For this configuration, the measured forces are within the operational limits.
    </em>
    </p>
