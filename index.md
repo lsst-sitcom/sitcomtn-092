@@ -52,10 +52,10 @@ The tests were conducted on two observation days: **2024-01-03 and 2024-01-05**.
    - This configuration poses a risk of mirror damage due to stress and fatigue.
 
      <img width="833" alt="hp100%velo" src="https://github.com/user-attachments/assets/79fc7f7f-2327-4988-9000-49580eee0916" />
-<p>
-<em> Fig.01. ICS performance when performing a 3.5 deg slew at 100% velocity, acceleration, and jerk. The top y-axes show the measured hardpoint forces. The middle and bottom y-axes show the torques and velocities for Azimuth in Elevation over the same time window. Since the measured forces are trespassing the fatigue limit, running the survey in this configuration can cause damage to the mirror.
-</em>
-</p>
+   <p>
+   <em> Fig.01. ICS performance when performing a 3.5 deg slew at 100% velocity, acceleration, and jerk. The top y-axes show the measured hardpoint forces. The middle and bottom y-axes show the torques and velocities for Azimuth in Elevation over the same time window. Since the measured forces are trespassing the fatigue limit, running the survey in this configuration can cause damage to the mirror.
+   </em>
+   </p>
 
      
    2.	**40% Velocity, Acceleration, and Jerk (2024-01-05)**:
