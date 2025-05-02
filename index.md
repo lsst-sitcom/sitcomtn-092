@@ -3,8 +3,9 @@
 ```{eval-rst}
 .. abstract::
 
-   The M1M3 Force Balance System was engineered to mitigate the influence of gravity/elevation forces, thermal fluctuations, and inertia impacts. This technical note presents an initial analysis of the Force Balance System's performance when implementing corrections to account for inertia effects.
+   The M1M3 Force Balance System was engineered to mitigate the influence of gravity/elevation forces, thermal fluctuations, inertial forces.
 
+   This technical note presents an initial analysis of the Force Balance System's performance when implementing corrections to account for inertial effects.
 
 ```
 
@@ -16,10 +17,111 @@
 **This technote is a work-in-progress.**
 :::
 
-## Abstract
+## Introduction
 
-The M1M3 Force Balance System was engineered to mitigate the influence of gravity/elevation forces, thermal fluctuations, and inertia impacts. This technical note presents an initial analysis of the Force Balance System's performance when implementing corrections to account for inertia effects.
+- What is the Inertia Compensation System?
+  - Balance Forces
+  - Acceleration Forces
+  - Velocity Forces
+  - Booster Valves
+  - What are the RRGG codes we see around? Why are they important?
 
+- [TMA Motion Settings](https://rubinobs.atlassian.net/wiki/spaces/LSSTCOM/pages/53741249/TMA+Motion+Settings)
+  - Why do we have different motion settings?
+
+
+## Single Slew Analysis
+
+During the full-speed sky mapping mission, the telescope will move very quickly, generating significant inertial forces. 
+To counteract these forces, the **Inertial Compensation System (ICS)** is employed. 
+The ICS consists of accelerometers and gyroscopic sensors that measure the telescope's motion and activate during slews in elevation, azimuth, or both axes. 
+This system is critical for minimizing the physical effects of inertial forces on the telescope's structure.
+The test involves short slews of 3.5 degrees (long slews defined as > 3.5 degrees and short slews as ≤ 3.5 degrees). 
+The objective is to measure forces in the six **HardPoints (HPs)**, ensuring they remain below the breakaway limits.
+The nominal breakaway limit, previously measured is **3000 N**, defines the maximum force a hardpoint can withstand before disengaging to protect the mirror. 
+Breakaway testing consist in **extend** and **contract** each hardpoint using stepping motors. 
+As a consequence, we increase the compression/tension forces up to the limit at which the breakaway happens, confirming that the limits were within the expected range.
+
+### Dynamic Test and Hardpoint Forces
+The dynamic test measures the force on the six HPs, and the measured forces should ideally remain at zero during slews.
+The HPs should not hold excessive forces, in other words, forces measured should not overstep the 15% of the breakway limits (450 N).
+This is important because overloaded forces can damage the mirror in the long-term.
+
+#### Test Configurations
+The tests were conducted on two observation days: **2024-01-03 and 2024-01-05**.
+   1.	**100% Velocity, Acceleration, and Jerk (2024-01-03)**:
+   - Forces on the Hardpoints stay within the nominal breakaway limit (3000 N)  but exceed the 30% fatigue limit (900 N).
+   - This configuration poses a risk of mirror damage due to stress and fatigue.
+     
+   <p>
+   <img width="833" alt="hp100%velo" src="https://github.com/user-attachments/assets/79fc7f7f-2327-4988-9000-49580eee0916" />
+      
+   <em> **Figure 1**. ICS performance when performing a 3.5 deg slew at 100% velocity, acceleration, and jerk. The top y-axes show the measured hardpoint forces. The middle and bottom y-axes show the torques and velocities for Azimuth in Elevation over the same time window. Since the measured forces are trespassing the fatigue limit, running the survey in this configuration can cause damage to the mirror.
+   </em>
+   </p>
+    
+   2.	**40% Velocity, Acceleration, and Jerk (2024-01-05)**:
+   - Forces on the Hardpoints remained within the 15% operational limit (450 N).
+   - This configuration is safe for long-term operation, minimizing stress on the mirror.
+     
+   <p>    
+   <img width="833" alt="hp40%velo" src="https://github.com/user-attachments/assets/65247b16-91f5-4673-bf55-e2c35981c7ac" />
+      
+   <em> **Figure 2**. ICS performance when performing a 3.5 deg slew at 40% velocity, acceleration, and jerk. For this configuration, the measured forces are within the operational limits.
+   </em>
+   </p>
+     
+The ICS effectively compensated for inertial forces at moderate speeds (40% velocity, acceleration, and jerk). 
+However, at TMA maximum motion settings (100%), the measured forces exceeded the fatigue limits, raising concerns about long-term mirror safety. 
+To ensure the telescope's safety and longevity, slews should be configured to maintain Hardpoint forces within the **15% operational limit (450 N)**.
+
+### Histogram Analysis
+The same data collected on the observation days, **2024-01-03 and 2024-01-05**, is displayed as a histogram to organize the data into groups for these specific observation days. 
+The histogram illustrates the slews performed at 100% and 40% velocity, along with the corresponding acceleration and jerk, which reached certain minimum and maximum values during the slewing process.
+
+#### Test Configurations
+   1. **100% Velocity, Acceleration, and Jerk (2024-01-03)**:
+   - It is observed that almost every slew performed in this 100% configuration exceeds the negative and positive fatigue limits of 900 N, which poses a significant danger to the mirror in the long term due to stress and fatigue.
+     
+   <p>
+   <img width="833" alt="histogram100%VEL" src="https://github.com/user-attachments/assets/7b438e0f-dfd0-425b-9117-9c60fc5d669b" />
+
+   <em> **Figure 3**. Histogram showing the count of slews performed at 100% velocity, acceleration, and jerk that reached a certain minimum and maximum values during a slew.
+   </em>
+   </p>
+     
+   2. **40% Velocity, Acceleration, and Jerk (2024-01-05)**:
+   - It is observed that almost every slew obtained during soak tests remains within the fatigue limits of 900 N, with the majority close to or within the operational limits of 450 N.
+
+   <p>
+   <img width="833" alt="histogram40%VELO" src="https://github.com/user-attachments/assets/57ba286f-fddb-4dcd-99ab-56bcb3fcf183" />
+
+   <em> **Figure 4**. Histogram showing the count of slews performed at 40% velocity, acceleration, and jerk that reached a certain minimum and maximum values during a slew.
+   </em>
+   </p>
+     
+**Key Limits:**
+   - **Nominal Breakaway Limit**: 3000 N (absolute maximum force hardpoints can handle).
+   - **Fatigue Limit**: 30% of 3000 N (900 N); forces above this risk long-term mirror damage.
+   - **Operational Limit**: 15% of 3000 N (450 N); target for safe, long-term operation.
+
+
+## M1M3 and M2 Surrogates Test Campaigns
+
+- When did they happen? Dates.
+- What tests did we execute? Those were BLOCK tickets, instead of test cases. List them.
+- Final results - add a link to SPIE Paper. There is no need to repeat information.
+
+
+## ComCam on Sky Campaign
+
+- What were the settings used?
+- What are the results?
+- Add links to the existing notebooks, plots, etc.
+- Add interpretation to these results.
+
+
+%% TODO - @pvenegas - Delete everything below this line
 ## M1M3 actuator movies
 
 Craig Lage - 20-Apr-23 The 17 tons of mirror are supported by 156 pneumatic actuators where 44 are single-axis and provide support only on the axial direction, 100 are dual-axis providing support in the axial and lateral direction, and 12 are dual-axis providing support in the axial and cross lateral directions. Positioning is provided by 6 hard points in a hexapod configuration which moves the mirror to a fixed operational position that shall be maintained during telescope operations. The remaining optical elements will be moved relative to this position in order to align the telescope optics. Support and optical figure correction is provided by 112 dual axis and 44 single axis pneumatic actuators.
@@ -89,8 +191,8 @@ from lsst_efd_client import EfdClient
 
 ### Set up the necessary subroutines
 
-```python 
-def actuator_layout(ax):    
+```python
+def actuator_layout(ax):
     """ Plot a visualization of the actuator locations and types       Parameters      ----------       ax : a matplotlib.axes object
       Returns
      -------
@@ -405,11 +507,11 @@ def get_zero_values_and_limits(df, subtract_baseline, t0, t1):
 ```
 
 ### Now generate the frames
-This will take some time   
+This will take some time
 
-```python   
-  client = EfdClient('usdf_efd')  
-  
+```python
+  client = EfdClient('usdf_efd')
+
   forces = await client.select_time_series("lsst.sal.MTM1M3.forceActuatorData", "*",
                                         Time(start, scale='utc'), Time(end, scale='utc'))
   timestamp = forces.index[0].isoformat().split('.')[0].replace('-','').replace(':','')
@@ -443,11 +545,11 @@ This will take some time
 
 ### Now build the movie
 
-```python 
+```python
 print(f"\033[1mThe movie name will be: {dir_name}movie_{timestamp}/m1m3_movie.mp4\033[0m")
 ```
 
-```python 
+```python
 command = f"ffmpeg -pattern_type glob -i '{dir_name}movie_{timestamp}/*.png' -f mp4 -vcodec libx264 -pix_fmt yuv420p -framerate 50 -y {dir_name}movie_{timestamp}/m1m3_movie.mp4" args = shlex.split(command) build_movie = subprocess.Popen(args) build_movie.wait()
 
 ```
