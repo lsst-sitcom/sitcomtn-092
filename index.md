@@ -39,7 +39,8 @@ This system is critical for minimizing the physical effects of inertial forces o
 The test involves short slews of 3.5 degrees (long slews defined as > 3.5 degrees and short slews as ≤ 3.5 degrees). 
 The objective is to measure forces in the six **HardPoints (HPs)**, ensuring they remain below the breakaway limits.
 The nominal breakaway limit, previously measured is **3000 N**, defines the maximum force a hardpoint can withstand before disengaging to protect the mirror. 
-Breakawy testing involved applying compression and tension forces to each hardpoint until breakaway occurred, confirming that the limits were within the expected range.
+Breakaway testing consist in **extend** and **contract** each hardpoint using stepping motors. 
+As a consequence, we increase the compression/tension forces up to the limit at which the breakaway happens, confirming that the limits were within the expected range.
 
 ### Dynamic Test and Hardpoint Forces
 The dynamic test measures the force on the six HPs, and the measured forces should ideally remain at zero during slews.
