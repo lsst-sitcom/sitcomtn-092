@@ -1,61 +1,18 @@
-import re
-import os
 import pandas as pd
 
-from matplotlib import pyplot as plt
 from lsst.summit.utils.efdUtils import getEfdData
-from lsst.ts.xml.enums.Script import ScriptState
 from lsst.summit.utils.tmaUtils import TMAState
 
+from lsst.sitcom.tn092.utils import filter_by_block_id
+
+
 __all__ = [
-    "convert_script_state",
-    "filter_by_block_id",
     "get_hp_minmax_forces",
-    "query_script_configuration",
-    "query_script_description",
-    "query_script_states",
-    "query_block_status",
+    "script_configuration",
+    "script_description",
+    "script_states",
+    "block_status",
 ]
-
-
-def convert_script_state(state):
-    """
-    Convert the Script state to a string.
-
-    Parameters
-    ----------
-    state : int
-        The Script state.
-
-    Returns
-    -------
-    str
-        The string representation of the Script state.
-    """
-    return ScriptState(state).name
-
-
-def filter_by_block_id(df, block_name):
-    """
-    Filter a DataFrame by the block name.
-
-    Parameters
-    ----------
-    df : pandas.DataFrame
-        The DataFrame to filter.
-    block_name : str
-        The block name to filter by.
-
-    Returns
-    -------
-    pandas.DataFrame
-        The filtered DataFrame.
-    """
-    assert "blockId" in df.columns, "The DataFrame must have a 'blockId' column."
-    block_number = int(re.search(r"\d+", block_name).group())
-    block_id = f"{block_number:03d}"
-    temp_df = df[df.blockId.str.contains(block_id)]
-    return temp_df
 
 
 def get_hp_minmax_forces(efd_client, tma_slew_events, event_type=TMAState.SLEWING, verbose=False):
@@ -91,9 +48,9 @@ def get_hp_minmax_forces(efd_client, tma_slew_events, event_type=TMAState.SLEWIN
             print(f"Event {evt.seqNum} on {evt.dayObs} faulted. Ignoring it.")
             continue
 
-        az = query_mtmount_azimuth(efd_client, evt)
-        el = query_mtmount_elevation(efd_client, evt)
-        forces = query_m1m3_hp_measured_forces(efd_client, evt)
+        az = mtmount_azimuth(efd_client, evt)
+        el = mtmount_elevation(efd_client, evt)
+        forces = m1m3_hp_measured_forces(efd_client, evt)
 
         try:
             az_diff = az.actualPosition.iloc[-1] - az.actualPosition.iloc[0]
@@ -124,7 +81,7 @@ def get_hp_minmax_forces(efd_client, tma_slew_events, event_type=TMAState.SLEWIN
     return df
 
 
-def query_m1m3_hp_measured_forces(efd_client, tma_slew_event):
+def m1m3_hp_measured_forces(efd_client, tma_slew_event):
     """
     Query the EFD for the measured forces of the M1M3 component.
 
@@ -150,7 +107,7 @@ def query_m1m3_hp_measured_forces(efd_client, tma_slew_event):
     return df_forces
 
 
-def query_mtmount_azimuth(efd_client, tma_slew_event):
+def mtmount_azimuth(efd_client, tma_slew_event):
     """
     Query the EFD for the azimuth of the MTMount component.
 
@@ -176,7 +133,7 @@ def query_mtmount_azimuth(efd_client, tma_slew_event):
     return df_azimuth
 
 
-def query_mtmount_elevation(efd_client, tma_slew_event):
+def mtmount_elevation(efd_client, tma_slew_event):
     """
     Query the EFD for the elevation of the MTMount component.
 
@@ -202,7 +159,7 @@ def query_mtmount_elevation(efd_client, tma_slew_event):
     return df_elevation
 
 
-def query_script_configuration(efd_client, start_day_obs, end_day_obs):
+def script_configuration(efd_client, start_day_obs, end_day_obs):
     """
     Query the EFD for the configuration of the Script SAL component.
 
@@ -231,7 +188,7 @@ def query_script_configuration(efd_client, start_day_obs, end_day_obs):
     return df_configuration
 
 
-def query_script_description(efd_client, start_day_obs, end_day_obs, block_id=None):
+def script_description(efd_client, start_day_obs, end_day_obs, block_id=None):
     """
     Query the EFD for the description of the Script SAL component.
 
@@ -262,7 +219,7 @@ def query_script_description(efd_client, start_day_obs, end_day_obs, block_id=No
     return df_description
 
 
-def query_script_log_message(efd_client, start_day_obs, end_day_obs):
+def script_log_message(efd_client, start_day_obs, end_day_obs):
     """
     Query the EFD for the log messages of the Script SAL component.
 
@@ -291,7 +248,7 @@ def query_script_log_message(efd_client, start_day_obs, end_day_obs):
     return df_log_message
 
 
-def query_script_states(efd_client, start_day_obs, end_day_obs, block_id=None):
+def script_states(efd_client, start_day_obs, end_day_obs, block_id=None):
     """
     Query the EFD for the state of the Script SAL component.
 
@@ -325,7 +282,7 @@ def query_script_states(efd_client, start_day_obs, end_day_obs, block_id=None):
     return df_state
 
 
-def query_block_status(client, start_day_obs, end_day_obs, block_name=None):
+def block_status(client, start_day_obs, end_day_obs, block_name=None):
     """
     Query the EFD for the block status.
 
@@ -355,5 +312,5 @@ def query_block_status(client, start_day_obs, end_day_obs, block_name=None):
 
     if block_name is not None:
         df_block = df_block[df_block.id == block_name]
-        
+
     return df_block
