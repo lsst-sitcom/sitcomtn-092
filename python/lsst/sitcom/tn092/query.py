@@ -1,3 +1,4 @@
+import asyncio
 import pandas as pd
 
 from lsst.summit.utils.efdUtils import getEfdData
@@ -15,7 +16,7 @@ __all__ = [
 ]
 
 
-def get_hp_minmax_forces(efd_client, tma_slew_events, event_type=TMAState.SLEWING, verbose=False):
+def get_hp_minmax_forces(efd_client, tma_slew_events, event_type=TMAState.SLEWING):
     """
     Retrieve the minimum and maximum hardpoint measured forces during TMA
     slewing events.
@@ -37,48 +38,124 @@ def get_hp_minmax_forces(efd_client, tma_slew_events, event_type=TMAState.SLEWIN
         elevation difference, minimum forces, and maximum forces for each
         valid event.
     """
-    df = pd.DataFrame()
-
-    for evt in tma_slew_events:
-
-        if evt.type != event_type:
-            continue
-
-        if evt.endReason == TMAState.FAULT:
-            print(f"Event {evt.seqNum} on {evt.dayObs} faulted. Ignoring it.")
-            continue
-
-        az = mtmount_azimuth(efd_client, evt)
-        el = mtmount_elevation(efd_client, evt)
-        forces = m1m3_hp_measured_forces(efd_client, evt)
-
-        try:
-            az_diff = az.actualPosition.iloc[-1] - az.actualPosition.iloc[0]
-            el_diff = el.actualPosition.iloc[-1] - el.actualPosition.iloc[0]
-        except AttributeError:
-            continue
-
-        if verbose:
-            print(
-                f"{evt.seqNum}, "
-                f"{az_diff:8.2f}, "
-                f"{el_diff:8.2f}, "
-                f"{forces.min().min():8.2f}, "
-                f"{forces.max().max():8.2f} "
-            )
-
-        my_dict = dict(
-            seq_num=evt.seqNum,
-            delta_az=az_diff,
-            delta_el=el_diff,
-            min_forces=forces.min().min(),
-            max_forces=forces.max().max(),
-        )
-
-        my_df = pd.DataFrame([my_dict])
-        df = pd.concat([df, my_df], ignore_index=True)
-
+    
+    # Create a list of tasks to run concurrently
+    tasks = [
+        hp_forces_and_azimuth_elevation_per_event(efd_client, evt, event_type)
+        for evt in tma_slew_events
+    ]
+    
+    # Run all tasks concurrently and gather results
+    loop = asyncio.get_event_loop()
+    df_list = loop.run_until_complete(asyncio.gather(*tasks))
+    df_list = [df for df in df_list if not df.isnull().any().any()]
+    
+    # Concatenate all DataFrames into one
+    df = pd.concat(df_list, ignore_index=True)
+        
     return df
+
+
+async def hp_forces_and_azimuth_elevation_per_event(client, evt, event_type):
+    """
+    Retrieve the azimuth, elevation, and minimum/maximum forces for a
+    specific TMA event.
+    
+    Parameters
+    ----------
+    client : EfdClient
+        The EFD client to use for querying.
+    evt : TMAEvent
+        The TMA event to process.
+    event_type : TMAState
+        The type of event to filter for (e.g., TMAState.SLEWING).
+    verbose : bool, optional
+        If True, print detailed information about the event (default is False).
+    
+    Returns
+    -------
+    pd.DataFrame
+        A DataFrame containing the azimuth, elevation, and forces data for the event.
+    """
+    if evt.type != event_type:
+        return pd.DataFrame()
+
+    if evt.endReason == TMAState.FAULT:
+        print(f"Event {evt.seqNum} on {evt.dayObs} faulted. Ignoring it.")
+        return pd.DataFrame()
+
+    az = await mtmount_azimuth(client, evt)
+    el = await mtmount_elevation(client, evt)
+    forces = await m1m3_hp_minmax_measured_forces(client, evt)
+    
+    df = pd.concat([az, el, forces], axis=1)
+    df["begin"] = evt.begin.isot
+    df["end"] = evt.end.isot
+    df["seq_num"] = evt.seqNum
+    df["day_obs"] = evt.dayObs
+    
+    return df
+
+
+async def m1m3_hp_minmax_measured_forces(efd_client, tma_slew_event):
+    """
+    Query the EFD for the minimum and maximum measured forces on the M1M3 hardpoints
+    during a TMA slew event.
+    
+    Parameters
+    ----------
+    efd_client : EfdClient
+        The EFD client to use for querying.
+    tma_slew_event : TMAEvent
+        The TMA event for the slew.
+        
+    Returns
+    -------
+    pandas.DataFrame
+        A DataFrame containing the minimum and maximum measured forces on the hardpoints.
+    """
+
+    # Create que query string
+    query = f"""
+        SELECT
+            MIN(measuredForce0) AS min_forces_0,
+            MAX(measuredForce0) AS max_forces_0,
+            MIN(measuredForce1) AS min_forces_1,
+            MAX(measuredForce1) AS max_forces_1,
+            MIN(measuredForce2) AS min_forces_2,
+            MAX(measuredForce2) AS max_forces_2,
+            MIN(measuredForce3) AS min_forces_3,
+            MAX(measuredForce3) AS max_forces_3,
+            MIN(measuredForce4) AS min_forces_4,
+            MAX(measuredForce4) AS max_forces_4,
+            MIN(measuredForce5) AS min_forces_5,
+            MAX(measuredForce5) AS max_forces_5
+        FROM "lsst.sal.MTM1M3.hardpointActuatorData"
+        WHERE time >= '{tma_slew_event.begin.isot}Z'
+        AND time < '{tma_slew_event.end.isot}Z'
+    """
+    
+    # Execute the query
+    df_forces = await efd_client.influx_client.query(query)
+    
+    if pd.DataFrame(df_forces).empty:
+        df_forces = pd.DataFrame(
+            columns=[
+                "min_forces_0", "max_forces_0",
+                "min_forces_1", "max_forces_1",
+                "min_forces_2", "max_forces_2",
+                "min_forces_3", "max_forces_3",
+                "min_forces_4", "max_forces_4",
+                "min_forces_5", "max_forces_5",
+                "min_forces", "max_forces"
+            ],
+            data=[[None] * 14]
+        )
+    else:
+        df_forces["min_forces"] = df_forces.filter(like="min_forces").min(axis=1)
+        df_forces["max_forces"] = df_forces.filter(like="max_forces").max(axis=1)
+
+    return df_forces
 
 
 def m1m3_hp_measured_forces(efd_client, tma_slew_event):
@@ -107,7 +184,7 @@ def m1m3_hp_measured_forces(efd_client, tma_slew_event):
     return df_forces
 
 
-def mtmount_azimuth(efd_client, tma_slew_event):
+async def mtmount_azimuth(efd_client, tma_slew_event):
     """
     Query the EFD for the azimuth of the MTMount component.
 
@@ -122,18 +199,30 @@ def mtmount_azimuth(efd_client, tma_slew_event):
     -------
     pandas.DataFrame
         A DataFrame containing the azimuth of the MTMount component.
+    """    
+    query = f"""
+        SELECT
+            FIRST(actualPosition) AS az_start,
+            LAST(actualPosition) AS az_end
+        FROM "lsst.sal.MTMount.azimuth"
+        WHERE time >= '{tma_slew_event.begin.isot}Z'
+        AND time < '{tma_slew_event.end.isot}Z'
     """
-    df_azimuth = getEfdData(
-        efd_client,
-        "lsst.sal.MTMount.azimuth",
-        columns=["actualPosition"],
-        event=tma_slew_event,
-    )
+    
+    df_azimuth = await efd_client.influx_client.query(query)
+    
+    if pd.DataFrame(df_azimuth).empty:
+        return pd.DataFrame(
+            columns=["az_start", "az_end", "az_diff"],
+            data=[[None, None, None]]
+        )
+    else:
+        df_azimuth["az_diff"] = df_azimuth["az_end"] - df_azimuth["az_start"]
 
     return df_azimuth
 
 
-def mtmount_elevation(efd_client, tma_slew_event):
+async def mtmount_elevation(efd_client, tma_slew_event):
     """
     Query the EFD for the elevation of the MTMount component.
 
@@ -149,12 +238,25 @@ def mtmount_elevation(efd_client, tma_slew_event):
     pandas.DataFrame
         A DataFrame containing the elevation of the MTMount component.
     """
-    df_elevation = getEfdData(
-        efd_client,
-        "lsst.sal.MTMount.elevation",
-        columns=["actualPosition"],
-        event=tma_slew_event,
-    )
+
+    query = f"""
+        SELECT
+            FIRST(actualPosition) AS el_start,
+            LAST(actualPosition) AS el_end
+        FROM "lsst.sal.MTMount.elevation"
+        WHERE time >= '{tma_slew_event.begin.isot}Z'
+        AND time < '{tma_slew_event.end.isot}Z'
+    """
+
+    df_elevation = await efd_client.influx_client.query(query)
+
+    if pd.DataFrame(df_elevation).empty:
+        return pd.DataFrame(
+            columns=["el_start", "el_end", "el_diff"], 
+            data=[[None, None, None]]
+        )
+    else:
+        df_elevation["el_diff"] = df_elevation["el_end"] - df_elevation["el_start"]
 
     return df_elevation
 
