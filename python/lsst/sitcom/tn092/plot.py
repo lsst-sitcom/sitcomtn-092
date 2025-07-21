@@ -1,8 +1,12 @@
 import matplotlib.pyplot as plt
 import os
 
+from lsst.summit.utils.tmaUtils import TMAState
 
-def histogram_hp_minmax_forces(df, day_obs):
+__all__ = ["histogram_hp_minmax_forces"]
+
+
+def histogram_hp_minmax_forces(df, day_obs, end_reason=None):
     """
     Plots histograms of the minimum and maximum forces measured on hardpoints
     during slews.
@@ -18,8 +22,9 @@ def histogram_hp_minmax_forces(df, day_obs):
     -------
     None
     """
+    end_reason = TMAState(end_reason) if end_reason is not None else None
     fig, (min_ax, max_ax) = plt.subplots(figsize=(10, 5), ncols=2, sharey=True)
-
+    
     min_ax.hist(
         df["min_forces"],
         ec="white",
@@ -34,6 +39,25 @@ def histogram_hp_minmax_forces(df, day_obs):
         label="Maximum forces",
         log=True,
     )
+    
+    if end_reason is not None:
+        mask = df["end_reason"] == end_reason
+        min_ax.hist(
+            df.loc[mask, "min_forces"],
+            ec="white",
+            fc="orange",
+            alpha=0.5,
+            label=f"Minimum forces ({end_reason.name})",
+            log=True,
+        )
+        max_ax.hist(
+            df.loc[mask, "max_forces"],
+            ec="white",
+            fc="orange",
+            alpha=0.5,
+            label=f"Maximum forces ({end_reason.name})",
+            log=True,
+        )
 
     min_ax.grid(alpha=0.3)
     min_ax.set_xlabel("Minimum measured forces on\n the hardpoints during a slew [N]")
@@ -44,7 +68,7 @@ def histogram_hp_minmax_forces(df, day_obs):
 
     max_ax.grid(alpha=0.3)
     max_ax.set_xlabel("Maximum measured forces on\n the hardpoints during a slew [N]")
-    # max_ax.set_ylabel("Number of slews")
+    
     max_ax.axvline(450, ls=":", c="black", alpha=0.5, label="Operational limit", lw=2)
     max_ax.axvline(900, ls="--", c="red", alpha=0.5, label="Fatigue limit", lw=2)
     max_ax.legend()

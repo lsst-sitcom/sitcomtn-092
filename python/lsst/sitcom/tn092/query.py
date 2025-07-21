@@ -16,7 +16,7 @@ __all__ = [
 ]
 
 
-def get_hp_minmax_forces(efd_client, tma_slew_events, event_type=TMAState.SLEWING):
+def hp_forces_and_azimuth_elevation(efd_client, tma_slew_events):
     """
     Retrieve the minimum and maximum hardpoint measured forces during TMA
     slewing events.
@@ -41,7 +41,7 @@ def get_hp_minmax_forces(efd_client, tma_slew_events, event_type=TMAState.SLEWIN
     
     # Create a list of tasks to run concurrently
     tasks = [
-        hp_forces_and_azimuth_elevation_per_event(efd_client, evt, event_type)
+        hp_forces_and_azimuth_elevation_per_event(efd_client, evt)
         for evt in tma_slew_events
     ]
     
@@ -56,7 +56,7 @@ def get_hp_minmax_forces(efd_client, tma_slew_events, event_type=TMAState.SLEWIN
     return df
 
 
-async def hp_forces_and_azimuth_elevation_per_event(client, evt, event_type):
+async def hp_forces_and_azimuth_elevation_per_event(client, evt):
     """
     Retrieve the azimuth, elevation, and minimum/maximum forces for a
     specific TMA event.
@@ -77,13 +77,7 @@ async def hp_forces_and_azimuth_elevation_per_event(client, evt, event_type):
     pd.DataFrame
         A DataFrame containing the azimuth, elevation, and forces data for the event.
     """
-    if evt.type != event_type:
-        return pd.DataFrame()
-
-    if evt.endReason == TMAState.FAULT:
-        print(f"Event {evt.seqNum} on {evt.dayObs} faulted. Ignoring it.")
-        return pd.DataFrame()
-
+    # Query the EFD for azimuth, elevation, and forces
     az = await mtmount_azimuth(client, evt)
     el = await mtmount_elevation(client, evt)
     forces = await m1m3_hp_minmax_measured_forces(client, evt)
@@ -93,6 +87,7 @@ async def hp_forces_and_azimuth_elevation_per_event(client, evt, event_type):
     df["end"] = evt.end.isot
     df["seq_num"] = evt.seqNum
     df["day_obs"] = evt.dayObs
+    df["end_reason"] = TMAState(evt.endReason)
     
     return df
 
