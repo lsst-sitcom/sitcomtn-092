@@ -71,5 +71,5 @@ setup -r $HOME/notebooks/lsst-sitcom/sitcomtn-092
 Open a notebook and try to run the import below to confirm it is working properly:
 
 ```
-from lsst.sitcom.sitcomtn092 import query
+from lsst.sitcom.tn092 import query
 ```
