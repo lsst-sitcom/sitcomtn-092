@@ -295,7 +295,7 @@ def script_description(efd_client, start_day_obs, end_day_obs, block_id=None):
         The EFD client to use for querying.
     start_day_obs : int
         The first day of observations to query.
-        end_day_obs : int
+    end_day_obs : int
         The last day of observations to query.
     block_id : str, optional
         The block ID to filter by.
