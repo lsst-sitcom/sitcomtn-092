@@ -37,7 +37,7 @@ When you push changes to a another branch, a preview of the technote is publishe
 
 ## Editing this technical note
 
-The main content of this technote is in `index.md` (a reStructuredText file).
+The main content of this technote is in `index.md` (a Markdown file).
 Metadata and configuration is in the `technote.toml` file.
 For guidance on creating content and information about specifying metadata and configuration, see the Documenteer documentation: https://documenteer.lsst.io/technotes.
 
