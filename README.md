@@ -44,7 +44,7 @@ For guidance on creating content and information about specifying metadata and c
 
 ## Using as a python package
 
-You can install this repository to use the modules inside the `python/lsst/sitcom/sitcomtn02` folder. 
+You can install this repository to use the modules inside the `python/lsst/sitcom/sitcomtn092` folder. 
 
 ### On a terminal
 
