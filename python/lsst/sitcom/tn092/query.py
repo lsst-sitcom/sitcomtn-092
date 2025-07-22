@@ -110,7 +110,7 @@ async def m1m3_hp_minmax_measured_forces(efd_client, tma_slew_event):
         A DataFrame containing the minimum and maximum measured forces on the hardpoints.
     """
 
-    # Create que query string
+    # Create the query string
     query = f"""
         SELECT
             MIN(measuredForce0) AS min_forces_0,
