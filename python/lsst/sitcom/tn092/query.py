@@ -1,64 +1,22 @@
-import re
-import os
+import asyncio
 import pandas as pd
 
-from matplotlib import pyplot as plt
 from lsst.summit.utils.efdUtils import getEfdData
-from lsst.ts.xml.enums.Script import ScriptState
 from lsst.summit.utils.tmaUtils import TMAState
 
+from lsst.sitcom.tn092.utils import filter_by_block_id
+
+
 __all__ = [
-    "convert_script_state",
-    "filter_by_block_id",
     "get_hp_minmax_forces",
-    "query_script_configuration",
-    "query_script_description",
-    "query_script_states",
-    "query_block_status",
+    "script_configuration",
+    "script_description",
+    "script_states",
+    "block_status",
 ]
 
 
-def convert_script_state(state):
-    """
-    Convert the Script state to a string.
-
-    Parameters
-    ----------
-    state : int
-        The Script state.
-
-    Returns
-    -------
-    str
-        The string representation of the Script state.
-    """
-    return ScriptState(state).name
-
-
-def filter_by_block_id(df, block_name):
-    """
-    Filter a DataFrame by the block name.
-
-    Parameters
-    ----------
-    df : pandas.DataFrame
-        The DataFrame to filter.
-    block_name : str
-        The block name to filter by.
-
-    Returns
-    -------
-    pandas.DataFrame
-        The filtered DataFrame.
-    """
-    assert "blockId" in df.columns, "The DataFrame must have a 'blockId' column."
-    block_number = int(re.search(r"\d+", block_name).group())
-    block_id = f"{block_number:03d}"
-    temp_df = df[df.blockId.str.contains(block_id)]
-    return temp_df
-
-
-def get_hp_minmax_forces(efd_client, tma_slew_events, event_type=TMAState.SLEWING, verbose=False):
+def hp_forces_and_azimuth_elevation(efd_client, tma_slew_events):
     """
     Retrieve the minimum and maximum hardpoint measured forces during TMA
     slewing events.
@@ -80,113 +38,122 @@ def get_hp_minmax_forces(efd_client, tma_slew_events, event_type=TMAState.SLEWIN
         elevation difference, minimum forces, and maximum forces for each
         valid event.
     """
-    df = pd.DataFrame()
-
-    for evt in tma_slew_events:
-
-        if evt.type != event_type:
-            continue
-
-        if evt.endReason == TMAState.FAULT:
-            print(f"Event {evt.seqNum} on {evt.dayObs} faulted. Ignoring it.")
-            continue
-
-        az = query_mtmount_azimuth(efd_client, evt)
-        el = query_mtmount_elevation(efd_client, evt)
-        forces = query_m1m3_hp_measured_forces(efd_client, evt)
-
-        try:
-            az_diff = az.actualPosition.iloc[-1] - az.actualPosition.iloc[0]
-            el_diff = el.actualPosition.iloc[-1] - el.actualPosition.iloc[0]
-        except AttributeError:
-            continue
-
-        if verbose:
-            print(
-                f"{evt.seqNum}, "
-                f"{az_diff:8.2f}, "
-                f"{el_diff:8.2f}, "
-                f"{forces.min().min():8.2f}, "
-                f"{forces.max().max():8.2f} "
-            )
-
-        my_dict = dict(
-            seq_num=evt.seqNum,
-            delta_az=az_diff,
-            delta_el=el_diff,
-            min_forces=forces.min().min(),
-            max_forces=forces.max().max(),
-        )
-
-        my_df = pd.DataFrame([my_dict])
-        df = pd.concat([df, my_df], ignore_index=True)
-
+    
+    # Create a list of tasks to run concurrently
+    tasks = [
+        hp_forces_and_azimuth_elevation_per_event(efd_client, evt)
+        for evt in tma_slew_events
+    ]
+    
+    # Run all tasks concurrently and gather results
+    loop = asyncio.get_event_loop()
+    df_list = loop.run_until_complete(asyncio.gather(*tasks))
+    df_list = [df for df in df_list if not df.isnull().any().any()]
+    
+    # Concatenate all DataFrames into one
+    df = pd.concat(df_list, ignore_index=True)
+        
     return df
 
 
-def plot_histogram_hp_minmax_forces(df, day_obs, block_id):
+async def hp_forces_and_azimuth_elevation_per_event(client, evt):
     """
-    Plots histograms of the minimum and maximum forces measured on hardpoints
-    during slews.
+    Retrieve the azimuth, elevation, and minimum/maximum forces for a
+    specific TMA event.
+    
     Parameters
     ----------
-    df : pandas.DataFrame
-        DataFrame containing the minimum and maximum forces data. It should
-        have columns 'min_forces' and 'max_forces'.
-    day_obs : int or str
-        The observation day identifier to be included in the plot title and
-        filename.
-    block_id : str
-        The full identifier for a block to be added to the filename and
-        plot title.
+    client : EfdClient
+        The EFD client to use for querying.
+    evt : TMAEvent
+        The TMA event to process.
+    event_type : TMAState
+        The type of event to filter for (e.g., TMAState.SLEWING).
+    verbose : bool, optional
+        If True, print detailed information about the event (default is False).
+    
     Returns
     -------
-    None
+    pd.DataFrame
+        A DataFrame containing the azimuth, elevation, and forces data for the event.
     """
-    fig, (min_ax, max_ax) = plt.subplots(figsize=(10, 5), ncols=2, sharey=True)
-
-    min_ax.hist(
-        df["min_forces"],
-        ec="white",
-        alpha=0.75,
-        label="Minimum forces",
-        log=True,
-    )
-    max_ax.hist(
-        df["max_forces"],
-        ec="white",
-        alpha=0.75,
-        label="Maximum forces",
-        log=True,
-    )
-
-    min_ax.grid(alpha=0.3)
-    min_ax.set_xlabel("Minimum measured forces on\n the hardpoints during a slew [N]")
-    min_ax.set_ylabel("Number of slews")
-    min_ax.axvline(-450, ls=":", c="black", alpha=0.5, label="Operational limit", lw=2)
-    min_ax.axvline(-900, ls="--", c="red", alpha=0.5, label="Fatigue limit", lw=2)
-    min_ax.legend()
-
-    max_ax.grid(alpha=0.3)
-    max_ax.set_xlabel("Maximum measured forces on\n the hardpoints during a slew [N]")
-    # max_ax.set_ylabel("Number of slews")
-    max_ax.axvline(450, ls=":", c="black", alpha=0.5, label="Operational limit", lw=2)
-    max_ax.axvline(900, ls="--", c="red", alpha=0.5, label="Fatigue limit", lw=2)
-    max_ax.legend()
-
-    fig.suptitle(
-        f"Histogram with the number of slews with\n"
-        f"different minimum and maximum measured forces on the hardpoints.\n"
-        f"{block_id}, DayObs {day_obs}, total of {df.index.size} slews",
-    )
-
-    os.makedirs("./plots", exist_ok=True)
-    fig.tight_layout()
-    fig.savefig(f"./plots/hist_hp_minmax_{block_id}_{day_obs}.png")
-    plt.show()
+    # Query the EFD for azimuth, elevation, and forces
+    az = await mtmount_azimuth(client, evt)
+    el = await mtmount_elevation(client, evt)
+    forces = await m1m3_hp_minmax_measured_forces(client, evt)
+    
+    df = pd.concat([az, el, forces], axis=1)
+    df["begin"] = evt.begin.isot
+    df["end"] = evt.end.isot
+    df["seq_num"] = evt.seqNum
+    df["day_obs"] = evt.dayObs
+    df["end_reason"] = TMAState(evt.endReason)
+    
+    return df
 
 
-def query_m1m3_hp_measured_forces(efd_client, tma_slew_event):
+async def m1m3_hp_minmax_measured_forces(efd_client, tma_slew_event):
+    """
+    Query the EFD for the minimum and maximum measured forces on the M1M3 hardpoints
+    during a TMA slew event.
+    
+    Parameters
+    ----------
+    efd_client : EfdClient
+        The EFD client to use for querying.
+    tma_slew_event : TMAEvent
+        The TMA event for the slew.
+        
+    Returns
+    -------
+    pandas.DataFrame
+        A DataFrame containing the minimum and maximum measured forces on the hardpoints.
+    """
+
+    # Create the query string
+    query = f"""
+        SELECT
+            MIN(measuredForce0) AS min_forces_0,
+            MAX(measuredForce0) AS max_forces_0,
+            MIN(measuredForce1) AS min_forces_1,
+            MAX(measuredForce1) AS max_forces_1,
+            MIN(measuredForce2) AS min_forces_2,
+            MAX(measuredForce2) AS max_forces_2,
+            MIN(measuredForce3) AS min_forces_3,
+            MAX(measuredForce3) AS max_forces_3,
+            MIN(measuredForce4) AS min_forces_4,
+            MAX(measuredForce4) AS max_forces_4,
+            MIN(measuredForce5) AS min_forces_5,
+            MAX(measuredForce5) AS max_forces_5
+        FROM "lsst.sal.MTM1M3.hardpointActuatorData"
+        WHERE time >= '{tma_slew_event.begin.isot}Z'
+        AND time < '{tma_slew_event.end.isot}Z'
+    """
+    
+    # Execute the query
+    df_forces = await efd_client.influx_client.query(query)
+    
+    if pd.DataFrame(df_forces).empty:
+        df_forces = pd.DataFrame(
+            columns=[
+                "min_forces_0", "max_forces_0",
+                "min_forces_1", "max_forces_1",
+                "min_forces_2", "max_forces_2",
+                "min_forces_3", "max_forces_3",
+                "min_forces_4", "max_forces_4",
+                "min_forces_5", "max_forces_5",
+                "min_forces", "max_forces"
+            ],
+            data=[[None] * 14]
+        )
+    else:
+        df_forces["min_forces"] = df_forces.filter(like="min_forces").min(axis=1)
+        df_forces["max_forces"] = df_forces.filter(like="max_forces").max(axis=1)
+
+    return df_forces
+
+
+def m1m3_hp_measured_forces(efd_client, tma_slew_event):
     """
     Query the EFD for the measured forces of the M1M3 component.
 
@@ -212,7 +179,7 @@ def query_m1m3_hp_measured_forces(efd_client, tma_slew_event):
     return df_forces
 
 
-def query_mtmount_azimuth(efd_client, tma_slew_event):
+async def mtmount_azimuth(efd_client, tma_slew_event):
     """
     Query the EFD for the azimuth of the MTMount component.
 
@@ -227,18 +194,30 @@ def query_mtmount_azimuth(efd_client, tma_slew_event):
     -------
     pandas.DataFrame
         A DataFrame containing the azimuth of the MTMount component.
+    """    
+    query = f"""
+        SELECT
+            FIRST(actualPosition) AS az_start,
+            LAST(actualPosition) AS az_end
+        FROM "lsst.sal.MTMount.azimuth"
+        WHERE time >= '{tma_slew_event.begin.isot}Z'
+        AND time < '{tma_slew_event.end.isot}Z'
     """
-    df_azimuth = getEfdData(
-        efd_client,
-        "lsst.sal.MTMount.azimuth",
-        columns=["actualPosition"],
-        event=tma_slew_event,
-    )
+    
+    df_azimuth = await efd_client.influx_client.query(query)
+    
+    if pd.DataFrame(df_azimuth).empty:
+        return pd.DataFrame(
+            columns=["az_start", "az_end", "az_diff"],
+            data=[[None, None, None]]
+        )
+    else:
+        df_azimuth["az_diff"] = df_azimuth["az_end"] - df_azimuth["az_start"]
 
     return df_azimuth
 
 
-def query_mtmount_elevation(efd_client, tma_slew_event):
+async def mtmount_elevation(efd_client, tma_slew_event):
     """
     Query the EFD for the elevation of the MTMount component.
 
@@ -254,17 +233,30 @@ def query_mtmount_elevation(efd_client, tma_slew_event):
     pandas.DataFrame
         A DataFrame containing the elevation of the MTMount component.
     """
-    df_elevation = getEfdData(
-        efd_client,
-        "lsst.sal.MTMount.elevation",
-        columns=["actualPosition"],
-        event=tma_slew_event,
-    )
+
+    query = f"""
+        SELECT
+            FIRST(actualPosition) AS el_start,
+            LAST(actualPosition) AS el_end
+        FROM "lsst.sal.MTMount.elevation"
+        WHERE time >= '{tma_slew_event.begin.isot}Z'
+        AND time < '{tma_slew_event.end.isot}Z'
+    """
+
+    df_elevation = await efd_client.influx_client.query(query)
+
+    if pd.DataFrame(df_elevation).empty:
+        return pd.DataFrame(
+            columns=["el_start", "el_end", "el_diff"], 
+            data=[[None, None, None]]
+        )
+    else:
+        df_elevation["el_diff"] = df_elevation["el_end"] - df_elevation["el_start"]
 
     return df_elevation
 
 
-def query_script_configuration(efd_client, start_day_obs, end_day_obs):
+def script_configuration(efd_client, start_day_obs, end_day_obs):
     """
     Query the EFD for the configuration of the Script SAL component.
 
@@ -293,7 +285,7 @@ def query_script_configuration(efd_client, start_day_obs, end_day_obs):
     return df_configuration
 
 
-def query_script_description(efd_client, start_day_obs, end_day_obs, block_id=None):
+def script_description(efd_client, start_day_obs, end_day_obs, block_id=None):
     """
     Query the EFD for the description of the Script SAL component.
 
@@ -303,7 +295,7 @@ def query_script_description(efd_client, start_day_obs, end_day_obs, block_id=No
         The EFD client to use for querying.
     start_day_obs : int
         The first day of observations to query.
-        end_day_obs : int
+    end_day_obs : int
         The last day of observations to query.
     block_id : str, optional
         The block ID to filter by.
@@ -324,7 +316,7 @@ def query_script_description(efd_client, start_day_obs, end_day_obs, block_id=No
     return df_description
 
 
-def query_script_log_message(efd_client, start_day_obs, end_day_obs):
+def script_log_message(efd_client, start_day_obs, end_day_obs):
     """
     Query the EFD for the log messages of the Script SAL component.
 
@@ -353,7 +345,7 @@ def query_script_log_message(efd_client, start_day_obs, end_day_obs):
     return df_log_message
 
 
-def query_script_states(efd_client, start_day_obs, end_day_obs, block_id=None):
+def script_states(efd_client, start_day_obs, end_day_obs, block_id=None):
     """
     Query the EFD for the state of the Script SAL component.
 
@@ -387,7 +379,7 @@ def query_script_states(efd_client, start_day_obs, end_day_obs, block_id=None):
     return df_state
 
 
-def query_block_status(client, start_day_obs, end_day_obs, block_name=None):
+def block_status(client, start_day_obs, end_day_obs, block_name=None):
     """
     Query the EFD for the block status.
 
@@ -417,5 +409,5 @@ def query_block_status(client, start_day_obs, end_day_obs, block_name=None):
 
     if block_name is not None:
         df_block = df_block[df_block.id == block_name]
-        
+
     return df_block
