@@ -4,7 +4,7 @@ import pandas as pd
 
 from matplotlib import pyplot as plt
 from lsst.summit.utils.efdUtils import getEfdData
-from lsst.ts.idl.enums.Script import ScriptState
+from lsst.ts.xml.enums.Script import ScriptState
 from lsst.summit.utils.tmaUtils import TMAState
 
 __all__ = [
@@ -124,7 +124,7 @@ def get_hp_minmax_forces(efd_client, tma_slew_events, event_type=TMAState.SLEWIN
     return df
 
 
-def plot_histogram_hp_minmax_forces(df, day_obs):
+def plot_histogram_hp_minmax_forces(df, day_obs, block_id):
     """
     Plots histograms of the minimum and maximum forces measured on hardpoints
     during slews.
@@ -136,6 +136,9 @@ def plot_histogram_hp_minmax_forces(df, day_obs):
     day_obs : int or str
         The observation day identifier to be included in the plot title and
         filename.
+    block_id : str
+        The full identifier for a block to be added to the filename and
+        plot title.
     Returns
     -------
     None
@@ -174,12 +177,12 @@ def plot_histogram_hp_minmax_forces(df, day_obs):
     fig.suptitle(
         f"Histogram with the number of slews with\n"
         f"different minimum and maximum measured forces on the hardpoints.\n"
-        f"DayObs {day_obs}, total of {df.index.size} slews",
+        f"{block_id}, DayObs {day_obs}, total of {df.index.size} slews",
     )
 
     os.makedirs("./plots", exist_ok=True)
     fig.tight_layout()
-    fig.savefig(f"./plots/histogram_hp_minmax_dayobs_{day_obs}.png")
+    fig.savefig(f"./plots/hist_hp_minmax_{block_id}_{day_obs}.png")
     plt.show()
 
 
