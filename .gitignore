@@ -9,3 +9,7 @@ venv/
 
 # Ignore Python Cache
 **/__pycache__
+
+# Ignore Visual Studio env files
+.env
+create_dot_env.py
